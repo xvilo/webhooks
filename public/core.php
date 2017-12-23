@@ -8,8 +8,7 @@
  */
 function ipCIDRCheck($ip, $cidr)
 {
-
-    list ($net, $mask) = explode('/', $cidr);
+    list($net, $mask) = explode('/', $cidr);
 
     $ipNet = ip2long($net);
     $ipMask = ~((1 << (32 - $mask)) - 1);
@@ -19,12 +18,10 @@ function ipCIDRCheck($ip, $cidr)
     $ipIpNet = $ipIp & $ipMask;
 
     return ($ipIpNet == $ipNet);
-
 }
 
 function doTheHooks($name, $branch, $repo, $transport)
 {
-
     $result = null;
 
     chdir($repo['dir']);
@@ -36,34 +33,25 @@ function doTheHooks($name, $branch, $repo, $transport)
     echo "\n";
 
     if (file_exists($repo['dir'].'/'.__HOOKS_FILE__)) {
-
         $yaml = Spyc::YAMLLoad($repo['dir'].'/'.__HOOKS_FILE__);
         $cmds = array();
 
         if (is_array($yaml[$repo['branch']])) {
-
             $cmds = $yaml[$repo['branch']];
-
         } elseif (is_array($yaml['all'])) {
-
             $cmds = $yaml['all'];
-
         }
 
         foreach ($cmds as $cmd) {
-
             echo "~> ".$cmd."\n";
             system(__ENV_PATH__.' '.$cmd);
             echo "\n";
-
         }
 
         $result = ob_get_contents();
 
         if (is_array($yaml['emails'])) {
-
             foreach ($yaml['emails'] as $email) {
-
                 $mailer = Swift_Mailer::newInstance($transport);
 
                 $message = Swift_Message::newInstance()
@@ -74,14 +62,10 @@ function doTheHooks($name, $branch, $repo, $transport)
                 ;
 
                 $result = $mailer->send($message);
-
             }
-
         }
-
     }
 
 
     ob_end_clean();
-
 }

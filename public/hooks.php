@@ -23,18 +23,15 @@ curl_close($ch);
 
 $metaJSON = json_decode($data);
 
-foreach ($metaJSON->hooks as $cidr)
-{
-  if (ipCIDRCheck($_SERVER['REMOTE_ADDR'], $cidr))
-  {
-    $match = true;
-    break;
-  }
+foreach ($metaJSON->hooks as $cidr) {
+    if (ipCIDRCheck($_SERVER['REMOTE_ADDR'], $cidr)) {
+        $match = true;
+        break;
+    }
 }
 
-if ($_SERVER['REMOTE_ADDR'] === GITLABCOM_IP)
-{
-  $match = true;
+if ($_SERVER['REMOTE_ADDR'] === GITLABCOM_IP) {
+    $match = true;
 }
 
 if (!$match) {
@@ -54,4 +51,4 @@ $name = $json->repository->name.'/'.$branch;
  */
 if (is_array($repositories[$name])) {
     doTheHooks($name, $branch, $repositories[$name], $transport);
-  }
+}
